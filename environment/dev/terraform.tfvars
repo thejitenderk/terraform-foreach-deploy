@@ -1,70 +1,43 @@
-rg_name = {
-  rg1 = {
-    name     = "rg-foreach"
-    location = "East US"
+location           = "East US"
+rg_name            = "demo-rg"
+vnet_name          = "demo-vnet"
+vnet_address_space = ["10.0.0.0/16"]
+
+subnets = {
+  front = {
+    name             = "frontsubnet"
+    address_prefixes = ["10.0.1.0/24"]
+  }
+  back = {
+    name             = "backsubnet"
+    address_prefixes = ["10.0.2.0/24"]
   }
 }
 
-vnetname = {
-  vnet1 = {
-    name    = "foreach-vnet"
-    rgname  = "rg-foreach"
-    rgloc   = "East US"
-    adspace = ["10.0.0.0/16"]
-  }
-}
-
-subnet = {
-  frontsubnet = {
-    name     = "frontend-subnet"
-    vnet     = "foreach-vnet"
-    rgname   = "rg-foreach"
-    adprefix = ["10.0.0.0/24"]
-  }
-  backsubnet = {
-    name     = "backend-subnet"
-    vnet     = "foreach-vnet"
-    rgname   = "rg-foreach"
-    adprefix = ["10.0.1.0/24"]
-  }
-}
-
-nic = {
+nics = {
   nic1 = {
-    name       = "front-nic"
-    rgloc      = "East US"
-    rgname     = "rg-foreach"
-    subnetname = "frontend-subnet"
-    vnet = "rg-foreach"
-
+    name       = "nic-front"
+    subnet_key = "front"
   }
   nic2 = {
-    name       = "back-nic"
-    rgloc      = "East US"
-    rgname     = "rg-foreach"
-    subnetname = "backend-subnet"
-    vnet = "rg-foreach"
-
+    name       = "nic-back"
+    subnet_key = "back"
   }
 }
 
-vmname = {
+vms = {
   vm1 = {
-    name      = "frontvmdev01"
-    rgname    = "rg-foreach"
-    rgloc     = "East US"
-    vmsize    = "Standard_B1s" # 👈 was 'size' before, changed to 'vmsize'
-    adminuser = "azureadmin"
-    adminpwd  = "Iwant2learn2025" # 👈 was 'adminpwd' — keep it same
-    nic       = "front-nic"
+    name       = "vm-front"
+    nic_key    = "nic1"
+    size       = "Standard_B1s"
+    admin_user = "azureadmin"
+    admin_pass = "Iwant2learn2025"
   }
   vm2 = {
-    name      = "backvmdev01"
-    rgname    = "rg-foreach"
-    rgloc     = "East US"
-    vmsize    = "Standard_B1s" # 👈 changed to match variable in module
-    adminuser = "azureadmin"
-    adminpwd  = "Iwant2learn2025"
-    nic       = "back-nic"
+    name       = "vm-back"
+    nic_key    = "nic2"
+    size       = "Standard_B1s"
+    admin_user = "azureadmin"
+    admin_pass = "Iwant2learn2025"
   }
 }

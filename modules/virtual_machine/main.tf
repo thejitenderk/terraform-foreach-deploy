@@ -1,25 +1,24 @@
 resource "azurerm_linux_virtual_machine" "linux_virtual_machine" {
-  name                = var.vmname
-  resource_group_name = var.rgname
-  location            = var.rgloc
-  size                = var.vmsize
-  admin_username      = var.adminuser
-  admin_password =   var.admimpwd
+  name                = var.name
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  size                = var.size
+  admin_username      = var.admin_username
+  admin_password      = var.admin_password
   disable_password_authentication = false
-  network_interface_ids = var.nic
-  
 
- 
+  network_interface_ids = [var.network_interface_id]
 
   os_disk {
-    caching              = "ReadWrite"
+    name              = "${var.name}-osdisk"
+    caching           = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
 
   source_image_reference {
     publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-jammy"
-    sku       = "22_04-lts"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
     version   = "latest"
   }
 }

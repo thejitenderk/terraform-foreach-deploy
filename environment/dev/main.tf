@@ -1,54 +1,47 @@
 module "resource_group" {
   source   = "../../modules/resource_group"
-  for_each = var.rg_name
-  rgname   = each.value.name
-  rgloc    = each.value.location
-
+  name     = var.rg_name
+  location = var.location
 }
 
-module "virtual_network" {
-  depends_on = [module.resource_group]
-  source     = "../../modules/virtual_network"
-  for_each   = var.vnetname
-  vnetname   = each.value.name
-  rgname     = each.value.rgname
-  rgloc      = each.value.rgloc
-  adspace    = each.value.adspace
-
+module "vnet" {
+  source              = "../../modules/virtual_network"
+  depends_on          = [module.resource_group]
+  name                = var.vnet_name
+  address_space       = var.vnet_address_space
+  location            = var.location
+  resource_group_name = var.rg_name
 }
 
-module "subnet" {
-  depends_on = [module.virtual_network]
-  source     = "../../modules/subnet"
-  for_each   = var.subnet
-  subname    = each.value.name
-  rgname     = each.value.rgname
-  vnetname   = each.value.vnet
-  apre       = each.value.adprefix
-
-
+module "subnets" {
+  for_each             = var.subnets
+  source               = "../../modules/subnet"
+  depends_on           = [module.vnet]
+  name                 = each.value.name
+  address_prefixes     = each.value.address_prefixes
+  virtual_network_name = var.vnet_name
+  resource_group_name  = var.rg_name
 }
 
-module "network_interface" {
-  depends_on = [module.subnet]
-  for_each   = var.nic
-  source     = "../../modules/network_interface"
-
-  nic       = each.value.name
-  rgname    = each.value.rgname
-  rgloc     = each.value.rgloc
-  subname = each.value.subnetname
-  vnetname = each.value.vnet
+module "nics" {
+  for_each            = var.nics
+  source              = "../../modules/network_interface"
+  depends_on          = [module.subnets]
+  name                = each.value.name
+  location            = var.location
+  resource_group_name = var.rg_name
+  subnet_id           = module.subnets[each.value.subnet_key].id
 }
 
-module "linux_virtual_machine" {
-  source    = "../../modules/virtual_machine"
-  for_each  = var.vmname
-  vmname    = each.value.name
-  rgname    = each.value.rgname
-  rgloc     = each.value.rgloc
-  vmsize    = each.value.vmsize
-  adminuser = each.value.adminuser
-  admimpwd  = each.value.adminpwd
-  nic       = each.value.nic
+module "vms" {
+  for_each             = var.vms
+  source               = "../../modules/virtual_machine"
+  depends_on           = [module.nics]
+  name                 = each.value.name
+  location             = var.location
+  resource_group_name  = var.rg_name
+  size                 = each.value.size
+  admin_username       = each.value.admin_user
+  admin_password       = each.value.admin_pass
+  network_interface_id = module.nics[each.value.nic_key].id
 }

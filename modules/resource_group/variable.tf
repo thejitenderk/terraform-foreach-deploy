@@ -1,4 +1,2 @@
-variable "rgname" { }
-variable "rgloc" {
-  
-}
+variable "name" {}
+variable "location" {}
