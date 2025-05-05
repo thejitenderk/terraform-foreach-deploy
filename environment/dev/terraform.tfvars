@@ -35,6 +35,7 @@ nic = {
     rgloc      = "East US"
     rgname     = "rg-foreach"
     subnetname = "frontend-subnet"
+    vnet = "rg-foreach"
 
   }
   nic2 = {
@@ -42,6 +43,7 @@ nic = {
     rgloc      = "East US"
     rgname     = "rg-foreach"
     subnetname = "backend-subnet"
+    vnet = "rg-foreach"
 
   }
 }

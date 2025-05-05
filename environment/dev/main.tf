@@ -37,8 +37,8 @@ module "network_interface" {
   nic       = each.value.name
   rgname    = each.value.rgname
   rgloc     = each.value.rgloc
-  subnet_id = each.value.subnetname
-
+  subname = each.value.subnetname
+  vnetname = each.value.vnet
 }
 
 module "linux_virtual_machine" {
