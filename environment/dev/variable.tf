@@ -5,10 +5,6 @@ variable "vnetname" {}
 variable "vmname" {}
 
 
-variable "nic" {
+variable "nic" {}
 
-}
-
-variable "subnet" {
-
-}
+variable "subnet" {}
