@@ -38,8 +38,8 @@ jobs:
       run: terraform -chdir=environment/dev init
 
     # Checks that all Terraform configuration files adhere to a canonical format
-    - name: Terraform Format
-      run: terraform -chdir=environment/dev fmt -check
+    - name: Terraform validate
+      run: terraform -chdir=environment/dev validate
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
