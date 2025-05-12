@@ -1,6 +1,7 @@
 resource "azurerm_subnet" "subnet" {
-  name                 = var.name
-  resource_group_name  = var.resource_group_name
-  virtual_network_name = var.virtual_network_name
-  address_prefixes     = var.address_prefixes
+  for_each = var.subnets
+  name                 = each.value.name
+  resource_group_name  = each.value.rgname
+  virtual_network_name = each.value.vnetname
+  address_prefixes     = each.value.add_pre
 }

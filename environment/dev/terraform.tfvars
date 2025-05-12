@@ -1,43 +1,36 @@
-location           = "East US"
-rg_name            = "demo-rg"
-vnet_name          = "demo-vnet"
-vnet_address_space = ["10.0.0.0/16"]
+rg_name = {
+  "rg1" = {
+    name     = "rg-dev-001"
+    location = "East US"
+  }
+
+}
+
+vnet_name = {
+  vnet1 = {
+    name       = "vnet-dev-001"
+    rgname     = "rg-dev-001"
+    rglocation = "East US"
+    cidr       = ["10.0.0.0/16"]
+  }
+}
 
 subnets = {
-  front = {
-    name             = "frontsubnet"
-    address_prefixes = ["10.0.1.0/24"]
-  }
-  back = {
-    name             = "backsubnet"
-    address_prefixes = ["10.0.2.0/24"]
+  subnet1 = {
+    name     = "subnet-dev-001"
+    vnetname = "vnet-dev-001"
+    add_pre  = ["10.0.1.0/24"]
+    rgname   = "rg-dev-001"
   }
 }
 
 nics = {
   nic1 = {
-    name       = "nic-front"
-    subnet_key = "front"
-  }
-  nic2 = {
-    name       = "nic-back"
-    subnet_key = "back"
-  }
-}
-
-vms = {
-  vm1 = {
-    name       = "vm-front"
-    nic_key    = "nic1"
-    size       = "Standard_B1s"
-    admin_user = "azureadmin"
-    admin_pass = "Iwant2learn2025"
-  }
-  vm2 = {
-    name       = "vm-back"
-    nic_key    = "nic2"
-    size       = "Standard_B1s"
-    admin_user = "azureadmin"
-    admin_pass = "Iwant2learn2025"
+    name       = "nic-dev-001"
+    rgname     = "rg-dev-001"
+    rglocation = "East US"
+    vnetname   = "vnet-dev-001"
+    subnetname = "subnet-dev-001"
+    subnet_key = "subnet1"
   }
 }
