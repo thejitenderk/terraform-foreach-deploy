@@ -33,7 +33,7 @@ jobs:
 
       - name: 'Terraform Init'
         run: |
-          terraform chdir=environment/dev init
-          terraform chdir=environment/dev validate
-          terraform chdir=environment/dev plan
+          terraform -chdir=environment/dev init
+          terraform -chdir=environment/dev validate
+          terraform -chdir=environment/dev plan
        
