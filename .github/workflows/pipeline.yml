@@ -49,5 +49,7 @@ jobs:
     needs: tfinit
     steps:
       - name: Terraform Plan
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
         id: plan
         run: terraform -chdir=environment/dev plan
