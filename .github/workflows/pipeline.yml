@@ -19,3 +19,22 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  
+  terraform-init:
+    name: 'Terraform Plan'
+    runs-on: ubuntu-latest
+    needs: azlogin
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v2
+      
+      - name: 'Set up Terraform'
+        uses: hashicorp/setup-terraform@v3
+
+      - name: 'Terraform Init'
+        run: |
+          cd terraform
+          terraform chdir=environment/dev init
+          terraform chdir=environment/dev validate
+          terraform chdir=environment/dev plan
+       
