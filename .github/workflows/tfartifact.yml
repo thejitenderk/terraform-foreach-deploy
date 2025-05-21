@@ -1,10 +1,10 @@
-name: Terraform CI/CD with Artifacts
+name: Terraform CI/CD (with -chdir)
 
 on:
   push:
     branches:
       - main
-      
+
 permissions:
   id-token: write
   contents: read
@@ -20,8 +20,8 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-            
-      - name: 'Az CLI login'
+
+      - name: Azure CLI Login
         uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -30,12 +30,6 @@ jobs:
 
       - name: Terraform Init
         run: terraform -chdir=environment/dev init
-
-      - name: Save .terraform directory
-        uses: actions/upload-artifact@v4
-        with:
-          name: terraform-dir
-          path: .terraform
 
   validate:
     name: Terraform Validate
@@ -48,10 +42,8 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Download .terraform directory
-        uses: actions/download-artifact@v4
-        with:
-          name: terraform-dir
+      - name: Terraform Init (lightweight)
+        run: terraform -chdir=environment/dev init -backend=false
 
       - name: Terraform Validate
         run: terraform -chdir=environment/dev validate
@@ -67,19 +59,20 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Download .terraform directory
-        uses: actions/download-artifact@v4
-        with:
-          name: terraform-dir
+      - name: Terraform Init (lightweight)
+        run: terraform -chdir=environment/dev init -backend=false
 
       - name: Terraform Plan
         run: terraform -chdir=environment/dev plan -out=tfplan
+
+      - name: Debug tfplan
+        run: ls -lah environment/dev/tfplan
 
       - name: Upload tfplan file
         uses: actions/upload-artifact@v4
         with:
           name: tfplan
-          path: tfplan
+          path: environment/dev/tfplan
 
   apply:
     name: Terraform Apply
@@ -93,10 +86,11 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Download tfplan file
+      - name: Download tfplan artifact
         uses: actions/download-artifact@v4
         with:
           name: tfplan
+          path: environment/dev
 
       - name: Terraform Apply
         run: terraform -chdir=environment/dev apply -auto-approve tfplan
