@@ -29,7 +29,7 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform -chdir=environment/dev init
 
       - name: Save .terraform directory
         uses: actions/upload-artifact@v4
@@ -54,7 +54,7 @@ jobs:
           name: terraform-dir
 
       - name: Terraform Validate
-        run: terraform validate
+        run: terraform -chdir=environment/dev validate
 
   plan:
     name: Terraform Plan
@@ -73,7 +73,7 @@ jobs:
           name: terraform-dir
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
+        run: terraform -chdir=environment/dev plan -out=tfplan
 
       - name: Upload tfplan file
         uses: actions/upload-artifact@v4
@@ -99,4 +99,4 @@ jobs:
           name: tfplan
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+        run: terraform -chdir=environment/dev apply -auto-approve tfplan
