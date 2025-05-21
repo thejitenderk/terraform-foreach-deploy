@@ -31,7 +31,7 @@ jobs:
         run: terraform init
 
       - name: Save .terraform directory
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: terraform-dir
           path: .terraform
@@ -48,7 +48,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Download .terraform directory
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: terraform-dir
 
@@ -67,7 +67,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Download .terraform directory
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: terraform-dir
 
@@ -75,7 +75,7 @@ jobs:
         run: terraform plan -out=tfplan
 
       - name: Upload tfplan file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: tfplan
           path: tfplan
@@ -93,7 +93,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Download tfplan file
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: tfplan
 
