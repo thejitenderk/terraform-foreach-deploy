@@ -1,0 +1,90 @@
+name: Terraform CI/CD with Artifacts
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  init:
+    name: Terraform Init
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Save .terraform directory
+        uses: actions/upload-artifact@v3
+        with:
+          name: terraform-dir
+          path: .terraform
+
+  validate:
+    name: Terraform Validate
+    runs-on: ubuntu-latest
+    needs: init
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Download .terraform directory
+        uses: actions/download-artifact@v3
+        with:
+          name: terraform-dir
+
+      - name: Terraform Validate
+        run: terraform validate
+
+  plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Download .terraform directory
+        uses: actions/download-artifact@v3
+        with:
+          name: terraform-dir
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: Upload tfplan file
+        uses: actions/upload-artifact@v3
+        with:
+          name: tfplan
+          path: tfplan
+
+  apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    needs: plan
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Download tfplan file
+        uses: actions/download-artifact@v3
+        with:
+          name: tfplan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
